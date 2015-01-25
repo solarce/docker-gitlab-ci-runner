@@ -1,6 +1,13 @@
 FROM sameersbn/ubuntu:14.04.20150120
 MAINTAINER sameer@damagehead.com
 
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -y
+RUN apt-get install -y curl
+RUN curl -s https://get.docker.io/ubuntu/ | sh
+RUN echo 'DOCKER_OPTS="-H :2375 -H unix:///var/run/docker.sock"' >> /etc/default/docker
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6 \
@@ -19,10 +26,6 @@ RUN /app/setup/install
 
 ADD assets/init /app/init
 RUN chmod 755 /app/init
-
-RUN apt-get install -y curl
-RUN curl -s https://get.docker.io/ubuntu/ | sh
-RUN echo 'DOCKER_OPTS="-H :2375 -H unix:///var/run/docker.sock"' >> /etc/default/docker
 
 VOLUME ["/var/lib/docker"]
 VOLUME ["/home/gitlab_ci_runner/data"]
